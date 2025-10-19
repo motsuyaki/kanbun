@@ -117,7 +117,7 @@
   <div id="quizMode">
     <div id="quizPattern">「未」</div>
     <div id="quizMeaning">いまだ〜ず（まだ〜ない）</div>
-    <button onclick="resetQuiz()" id="resetBtn">リセット</button>
+    <button onclick="resetQuiz()" id="resetBtn">🔄 リセット</button>
   </div>
 
   <script>
@@ -181,7 +181,7 @@
 
     function showNext() {
       if (remaining.length === 0) {
-        quizPattern.textContent = "全て出題しました";
+        quizPattern.textContent = "🎉 全て出題しました";
         quizMeaning.style.display = "none";
         resetBtn.style.display = "inline-block";
         return;
@@ -198,17 +198,14 @@
       startQuiz();
     }
 
-    quizDiv.addEventListener("touchstart", handleTap);
-    quizDiv.addEventListener("mousedown", handleTap);
-
-    function handleTap() {
+    quizDiv.addEventListener("click", () => {
       if (!showingAnswer) {
         quizMeaning.style.display = "block";
         showingAnswer = true;
       } else {
         showNext();
       }
-    }
+    });
   </script>
 </body>
 </html>
