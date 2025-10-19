@@ -66,11 +66,10 @@
 
     #quizMode {
       display: none;
-      height: 70vh;
       background: linear-gradient(to bottom, #f0fff0, #ffffff);
       border-radius: 16px;
       box-shadow: inset 0 0 20px rgba(0,0,0,0.05);
-      font-size: 2em;
+      font-size: 1.4em;
       text-align: center;
       user-select: none;
       touch-action: manipulation;
@@ -79,17 +78,30 @@
       justify-content: center;
       align-items: center;
       padding: 2em;
+      gap: 1em;
     }
-    #quizDisplay {
-      padding: 1em 2em;
-      width: 100%;
-      max-width: 600px;
+    #quizPattern {
+      padding: 0.5em 1em;
       background: #ffffff;
-      border-radius: 16px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      font-size: 1.8em;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      font-size: 1.6em;
       color: #005000;
-      margin-bottom: 1em;
+    }
+    #quizMeaning {
+      padding: 0.5em 1em;
+      background: #ffffff;
+      border-left: 4px solid #228b22;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      font-size: 1.2em;
+      color: #333;
+      max-width: 600px;
+      white-space: pre-wrap;
+      display: none;
+    }
+    #resetBtn {
+      display: none;
     }
   </style>
 </head>
@@ -103,8 +115,9 @@
   <div id="listMode" class="card"></div>
 
   <div id="quizMode">
-    <div id="quizDisplay">タップして意味を表示</div>
-    <button onclick="goBack()" id="backBtn">← 戻る</button>
+    <div id="quizPattern">「未」</div>
+    <div id="quizMeaning">いまだ〜ず（まだ〜ない）</div>
+    <button onclick="resetQuiz()" id="resetBtn">リセット</button>
   </div>
 
   <script>
@@ -128,15 +141,17 @@
 
     const listDiv = document.getElementById("listMode");
     const quizDiv = document.getElementById("quizMode");
-    const quizDisplay = document.getElementById("quizDisplay");
+    const quizPattern = document.getElementById("quizPattern");
+    const quizMeaning = document.getElementById("quizMeaning");
+    const resetBtn = document.getElementById("resetBtn");
 
-    let currentIndex = 0;
+    let remaining = [];
     let showingAnswer = false;
-    let previousIndex = null;
 
     function switchMode(mode) {
       listDiv.style.display = mode === "list" ? "block" : "none";
       quizDiv.style.display = mode === "quiz" ? "flex" : "none";
+      if (mode === "quiz") startQuiz();
     }
 
     syntaxList.forEach(item => {
@@ -156,36 +171,44 @@
       listDiv.appendChild(row);
     });
 
-    function showQuiz(index) {
-      const item = syntaxList[index];
-      quizDisplay.textContent = `「${item.pattern}」`;
+    function startQuiz() {
+      remaining = [...syntaxList];
+      showingAnswer = false;
+      resetBtn.style.display = "none";
+      quizMeaning.style.display = "none";
+      showNext();
+    }
+
+    function showNext() {
+      if (remaining.length === 0) {
+        quizPattern.textContent = "全て出題しました";
+        quizMeaning.style.display = "none";
+        resetBtn.style.display = "inline-block";
+        return;
+      }
+      const index = Math.floor(Math.random() * remaining.length);
+      const item = remaining.splice(index, 1)[0];
+      quizPattern.textContent = `「${item.pattern}」`;
+      quizMeaning.textContent = item.meaning;
+      quizMeaning.style.display = "none";
       showingAnswer = false;
     }
 
-    function showAnswer() {
+    function resetQuiz() {
+      startQuiz();
+    }
+
+    quizDiv.addEventListener("touchstart", handleTap);
+    quizDiv.addEventListener("mousedown", handleTap);
+
+    function handleTap() {
       if (!showingAnswer) {
-        const item = syntaxList[currentIndex];
-        quizDisplay.textContent = item.meaning;
+        quizMeaning.style.display = "block";
         showingAnswer = true;
       } else {
-        previousIndex = currentIndex;
-        currentIndex = (currentIndex + 1) % syntaxList.length;
-        showQuiz(currentIndex);
+        showNext();
       }
     }
-
-    function goBack() {
-      if (previousIndex !== null) {
-        currentIndex = previousIndex;
-        showQuiz(currentIndex);
-        previousIndex = null;
-      }
-    }
-
-    quizDisplay.addEventListener("touchstart", showAnswer);
-    quizDisplay.addEventListener("mousedown", showAnswer);
-
-    showQuiz(currentIndex);
   </script>
 </body>
 </html>
