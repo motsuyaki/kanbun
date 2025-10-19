@@ -8,12 +8,13 @@
     body {
       font-family: sans-serif;
       padding: 1em;
-      background: #f5f5f5;
+      background: #ffffff;
       margin: 0;
     }
     h1 {
       margin-bottom: 1em;
       text-align: center;
+      color: #005000;
     }
     .mode-switch {
       text-align: center;
@@ -24,7 +25,7 @@
       margin: 0.5em;
       border: none;
       border-radius: 4px;
-      background: #0078d4;
+      background: #228b22;
       color: white;
       cursor: pointer;
       font-size: 1em;
@@ -41,33 +42,32 @@
       align-items: center;
       gap: 1em;
       margin-bottom: 0.8em;
+      flex-wrap: wrap;
     }
     .item {
       font-size: 1.2em;
       padding: 0.5em 1em;
       border-radius: 6px;
-      cursor: pointer;
       font-weight: bold;
-      color: #0078d4;
-      background: #eaeaea;
+      color: #005000;
+      background: #f0fff0;
       min-width: 6em;
       text-align: center;
     }
     .meaning {
       flex: 1;
       padding: 0.5em 0.8em;
-      background: #fff;
-      border-left: 4px solid #0078d4;
+      background: #ffffff;
+      border-left: 4px solid #228b22;
       font-size: 0.95em;
       color: #333;
-      display: none;
       white-space: pre-wrap;
     }
 
     #quizMode {
       display: none;
       height: 70vh;
-      background: linear-gradient(to bottom, #e0f0ff, #ffffff);
+      background: linear-gradient(to bottom, #f0fff0, #ffffff);
       border-radius: 16px;
       box-shadow: inset 0 0 20px rgba(0,0,0,0.05);
       font-size: 2em;
@@ -84,11 +84,11 @@
       padding: 1em 2em;
       width: 100%;
       max-width: 600px;
-      background: #fff;
+      background: #ffffff;
       border-radius: 16px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
       font-size: 1.8em;
-      color: #0078d4;
+      color: #005000;
       margin-bottom: 1em;
     }
   </style>
@@ -139,7 +139,6 @@
       quizDiv.style.display = mode === "quiz" ? "flex" : "none";
     }
 
-    // 一覧モード表示
     syntaxList.forEach(item => {
       const row = document.createElement("div");
       row.className = "row";
@@ -152,16 +151,11 @@
       meaning.className = "meaning";
       meaning.textContent = item.meaning;
 
-      btn.onclick = () => {
-        meaning.style.display = meaning.style.display === "none" ? "block" : "none";
-      };
-
       row.appendChild(btn);
       row.appendChild(meaning);
       listDiv.appendChild(row);
     });
 
-    // クイズモード表示
     function showQuiz(index) {
       const item = syntaxList[index];
       quizDisplay.textContent = `「${item.pattern}」`;
@@ -191,7 +185,7 @@
     quizDisplay.addEventListener("touchstart", showAnswer);
     quizDisplay.addEventListener("mousedown", showAnswer);
 
-    showQuiz(currentIndex); // 初期表示
+    showQuiz(currentIndex);
   </script>
 </body>
 </html>
